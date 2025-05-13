@@ -1,0 +1,54 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 rounded" style="    max-width: 950px;
+    width: 100%;
+    height: 430px;
+    margin: auto;
+    position: absolute;
+    bottom: 165px;">
+      <div class="d-flex justify-content-center mb-4">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active fw-bold" style="color: rgba(38, 56, 94, 1);">Sign In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-muted" [routerLink]="'/register'">Register</a>
+          </li>
+        </ul>
+      </div>
+  
+      <h2 class="text-center mb-2 fw-bold">Sign in to your account</h2>
+      <!-- <div class="text-center mb-3">
+        <img src="assets/000.jpg" alt="Sound Wave" style="width: 100px;">
+      </div> -->
+  
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="mb-3">
+          <label class="fw-semibold" style="padding-bottom: 15px;">Email <span class="text-danger">*</span></label>
+          <input formControlName="email" type="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+  
+        <div class="mb-2 position-relative">
+          <label class="fw-semibold" style="    padding-bottom: 15px;">Password <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input formControlName="password" [type]="showPassword ? 'text' : 'password'" 
+                   class="form-control" placeholder="Enter your password" required>
+            <button type="button" class="btn btn-outline-secondary" style="background-color: white;" (click)="togglePasswordVisibility()">
+              <img [src]="showPassword ? 'assets/eye_hide.jpg' : 'assets/eye_show.jpg'" alt="Toggle Visibility" 
+                   style="width: 20px; height: 20px;">
+            </button>
+          </div>
+        </div>
+  
+        <div class="text-end mb-3">
+          <a [routerLink]="'/forgot-password'" class="text-muted">Forgot your password?</a>
+        </div>
+
+        <div style="text-align: center;">
+
+        <button type="submit" class="btn btn-primary w-50" style="background-color: rgba(38, 56, 94, 1); margin: auto;" [disabled]="loginForm.invalid">Sign In</button>
+
+  </div>
+      </form>
+    </div>
+  </div>
+  

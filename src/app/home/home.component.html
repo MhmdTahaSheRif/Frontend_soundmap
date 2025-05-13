@@ -1,0 +1,336 @@
+<div class="map-container">
+    <div class="map-sidebar">
+      <button (click)="togglePanel('participate')" 
+      style="border: none; background-color: white; width: 121px; height: 83px; padding: 0;">
+      <img *ngIf="activePanel !== 'participate'" src="assets/more.png" alt="Participate" style="width: 50%; height: 50%; object-fit: contain;">
+      <img *ngIf="activePanel === 'participate'" src="assets/close.png" alt="Close" style="width: 50%; height: 50%; object-fit: contain;">
+      </button>
+      
+
+<button (click)="togglePanel('search')" aria-activedescendant="activePanel"
+style="border: none; background-color: white; width: 121px; height: 83px; padding: 0;">
+  <img *ngIf="activePanel !== 'search'" src="assets/search.png" alt="Search" style="width: 50%; height: 50%; object-fit: contain;">
+  <img *ngIf="activePanel === 'search'" src="assets/close.png" alt="Close" style="width: 50%; height: 50%; object-fit: contain;">
+</button>
+
+<button (click)="togglePanel('sounds')" 
+    style="border: none; background-color: white; width: 121px; height: 83px; padding: 0; position: relative;">
+<img *ngIf="activePanel !== 'sounds'" src="assets/music.png" alt="Sounds" 
+   style="width: 50%; height: 50%; object-fit: contain;">
+<img *ngIf="activePanel === 'sounds'" src="assets/close.png" alt="Close" 
+   style="width: 50%; height: 50%; object-fit: contain;">
+
+<span *ngIf="filteredSounds?.length" 
+    style="position: absolute; top: 5px; right: 5px; background-color: red; color: white; 
+           border-radius: 50%; padding: 3px 7px; font-size: 12px;">
+{{ filteredSounds.length }}
+</span>
+</button>
+
+
+<button (click)="togglePanel('plus')" 
+style="border: none; background-color: white; width: 121px; height: 83px; padding: 0;">
+<img *ngIf="activePanel !== 'plus'" src="assets/plus.png" alt="Plus" style="width: 50%; height: 50%; object-fit: contain;">
+<img *ngIf="activePanel === 'plus'" src="assets/close.png" alt="Close" style="width: 50%; height: 50%; object-fit: contain;">
+</button>
+
+
+<button (click)="togglePanel('settings')" 
+style="border: none; background-color: white; width: 121px; height: 83px; padding: 0;">
+<img *ngIf="activePanel !== 'settings'" src="assets/setting.png" alt="Settings" style="width: 50%; height: 50%; object-fit: contain;">
+<img *ngIf="activePanel === 'settings'" src="assets/close.png" alt="Close" style="width: 50%; height: 50%; object-fit: contain;">
+</button>
+
+
+
+
+    </div>
+        <div id="map"></div>
+
+        <div class="details-panel" [class.open]="selectedSound" (click)="$event.stopPropagation()" style="    overflow-wrap: anywhere;">
+            <button class="close-btn" (click)="closeAllPanels()">×</button>
+          
+            <h3>{{ selectedSound?.soundSequenceName }}</h3>
+            <img src="assets/logo.jpg" alt="photooo" style="width: 150px; padding: 5px; margin: 10px 68px;">
+            <p><strong>Author:</strong> {{ selectedSound?.author }}</p>
+            <p><strong>Description:</strong> {{ selectedSound?.description }}</p>
+            <p><strong>Recording Date:</strong> {{ selectedSound?.recordingDate }}</p>
+          
+            <!-- Audio element will show only when selectedSound is available -->
+           <!-- Add a reference to the audio element -->
+           <audio controls id="audioPlayer" style="bottom: 86px; position: absolute; left: 1px;">
+            <source [attr.src]="selectedSound?.audioUrl" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+          
+          
+  
+          </div>
+          
+          
+
+
+      
+<div class="floating-audio-container" *ngIf="audioUrl">
+  <audio controls id="audioPlayer" style="bottom: 86px; position: absolute; left: 1px;">
+    <source [attr.src]="selectedSound?.audioUrl" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+  
+  
+    
+    <!-- Uncomment if you want a close button -->
+    <!-- <button class="close-audio-btn" (click)="closeAudio()">×</button> -->
+  </div>
+  
+    
+      <!-- <div class="details-panel" [class.open]="activePanel === 'details' || selectedSound" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="closePanel()">×</button>
+      
+        <h3>{{ selectedSound?.soundSequenceName }}</h3>
+        <p><strong>Author:</strong> {{ selectedSound?.author }}</p>
+        <p><strong>Description:</strong> {{ selectedSound?.description }}</p>
+        <p><strong>Recording Date:</strong> {{ selectedSound?.recordingDate }}</p>
+      
+        <div class="audio-section">
+          <h4>Audio Recording</h4>
+          
+          <div *ngIf="isLoadingAudio" class="loading-audio">
+            <p>Loading audio file...</p>
+          </div>
+          
+          <div *ngIf="audioError && !isLoadingAudio" class="audio-error">
+            <p>{{ audioError }}</p>
+            <button (click)="displaySoundDetails(selectedSound)" class="retry-btn">Retry</button>
+          </div>
+          
+          <audio *ngIf="audioUrl && !isLoadingAudio" controls class="audio-player">
+            <source [src]="audioUrl" type="audio/mpeg">
+            <source [src]="audioUrl" type="audio/wav">
+            <source [src]="audioUrl" type="audio/ogg">
+            Your browser does not support the audio element.
+          </audio>
+          
+          <p *ngIf="!audioUrl && !isLoadingAudio && !audioError" class="no-audio-message">
+            No audio available for this recording.
+          </p>
+        </div>
+      </div> -->
+
+    <!-- Dynamic Side Panels -->
+    <div class="side-panel" *ngFor="let key of getPanelKeys()" [ngClass]="{'open': activePanel === key}" style="    overflow-wrap: anywhere;">
+        <img src="assets/download.png" class="panel-logo" alt="Logo" >
+        <h3 class="panel-title">{{ getPanelTitle(key) }}</h3>
+
+        <ng-container *ngIf="key === 'search'">
+            <div class="search-panel">
+              <div class="search-container">
+                <div class="search-box">
+                  <input 
+                    type="text" 
+                    placeholder="Search..." 
+                    [(ngModel)]="searchQuery" 
+                    (input)="filterSounds(searchQuery)"
+                    class="search-input"
+                  />
+                  <button class="search-clear" *ngIf="searchQuery" (click)="searchQuery = ''; filterSounds('')">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                
+                <button class="search-btn" (click)="filterSounds(searchQuery); togglePanel('sounds', $event)">
+                    <i _ngcontent-ng-c3968832755="" class="fas fa-search search-icon" style="
+                 margin-top: -49px;
+                 left: 250px;
+                "></i>                    </button>
+              </div>
+          
+              <div class="filter-section">
+                <h4 class="filter-heading">Filter By</h4>
+                
+                <div class="filter-options">
+                  <div class="filter-group">
+                    <label for="thematic">Research Thematics</label>
+                    <select id="thematic" class="filter-select">
+                      <option>All Research Thematics</option>
+                    </select>
+                  </div>
+                
+                  
+                  <div class="filter-group">
+             
+                    
+                    <label for="effects">Sound Effects</label>
+   <ng-select
+  [items]="soundEffectsList"
+  bindLabel="effectName"
+  bindValue="id"
+  [multiple]="true"
+  [searchable]="true"
+  placeholder="🎵 Select sound effects..."
+  [(ngModel)]="selectedSoundEffectIds"
+  (change)="filterSounds(searchQuery)"
+          class="ng-select ng-select-bordered shadow-sm"
+>
+  <ng-template ng-option-tmp let-item="item">
+    <div class="d-flex align-items-start">
+      <i class="bi bi-music-note-beamed me-3 text-primary fs-5"></i>
+      <div>
+        <div class="fw-semibold text-dark">{{ item.effectName }}</div>
+        <small class="text-muted">{{ item.description || 'No description available' }}</small>
+      </div>
+    </div>
+  </ng-template>
+</ng-select>
+
+                  </div>
+                  
+                  <div class="filter-group">
+                    <label for="seasons">Seasons</label>
+                    <select id="seasons" class="filter-select">
+                      <option>All Seasons</option>
+                    </select>
+                  </div>
+                  
+                  <div class="filter-group">
+                    <label for="types">Types</label>
+                    <select id="types" class="filter-select">
+                      <option>All Types</option>
+                    </select>
+                  </div>
+                </div>
+          
+                <div class="range-slider-container">
+                  <label for="yearRange">Recorded Between</label>
+                  <div class="range-values">
+                    <span class="min-value">2000</span>
+                    <span class="max-value">2025</span>
+                  </div>
+<input 
+type="range" 
+min="2000" 
+[max]="selectedYear" 
+[(ngModel)]="minYear" 
+(change)="filterSounds(searchQuery)" 
+class="year-slider"
+/>
+
+                <div class="range-values">
+                  <span class="min-value">{{ minYear }}</span>
+                  <span class="max-value">{{ selectedYear }}</span>
+                </div>
+                
+                </div>
+          
+                <div class="search-actions">
+                  <button class="view-results-btn" (click)="filterSounds(searchQuery); togglePanel('sounds', $event)">
+                    View Results
+                  </button>
+                  
+                </div>
+              </div>
+            </div>
+          </ng-container>
+                  
+
+        <ng-container *ngIf="key === 'sounds'">
+            <ul class="sound-list">
+                <li *ngFor="let sound of filteredSounds" (click)="displaySoundDetails(sound)">
+                  <span class="icon historical" [style.color]="sound.randomColor"></span>
+                  {{ sound.soundSequenceName }}
+                </li>
+              </ul>
+              
+        </ng-container>
+        
+
+        <ng-container *ngIf="key === 'plus'">
+            <p>Soundscape gives you the possibility to submit online, after moderation, your own sound sequences.</p>
+            <a class="submit-btn" [routerLink]="'/addsound'" style="text-decoration: none;">Submit a Contribution</a>
+        </ng-container>
+
+        <ng-container *ngIf="key === 'settings'">
+            <div class="settings-panel">
+              <h4 class="section-title">Basemaps</h4>
+              
+              <div class="toggle-item">
+                <span class="toggle-label">Aerial View</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-item"> 
+                <span class="toggle-label">Hybrid</span> 
+                <label class="switch">
+                  <input type="checkbox" (change)="toggleLayer()">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              
+              
+              <div class="toggle-item">
+                <span class="toggle-label">Plan</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              
+              <h4 class="section-title">Playback</h4>
+              
+              <div class="toggle-item">
+                <span class="toggle-label">Automatic sequencing</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-item">
+                <span class="toggle-label">Shuffle play</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </ng-container>
+          
+          <ng-container *ngIf="key === 'participate'">
+            <div class="popup-buttons">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <button class="btn btn-classic" (click)="openPopup('aerial')">ABOUT</button>
+                  </li>
+                  <li class="list-group-item">
+                    <button class="btn btn-classic" (click)="openPopup('hybrid')">Content</button>
+                  </li>
+                  <li class="list-group-item">
+                    <button class="btn btn-classic" (click)="openPopup('plan')">Plan</button>
+                  </li>
+                </ul>
+              </div>
+              
+              
+
+
+          </ng-container>
+          
+    </div>
+</div>
+<div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ modalTitle }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ modalContent }}</p>
+          <img *ngIf="modalImage" [src]="modalImage" alt="Info Image" class="img-fluid mt-3">
+        </div>
+      </div>
+    </div>
+  </div>

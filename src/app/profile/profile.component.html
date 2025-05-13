@@ -1,0 +1,60 @@
+<div *ngIf="profileData" class="container mt-5">
+  <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+    <div class="card-header text-center py-4">
+      <h4 class="mb-0 text-uppercase letter-spacing">User Profile</h4>
+    </div>
+
+    <div class="card-body px-5 py-4">
+      <div class="row gy-4">
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">First Name</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.firstName }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">Last Name</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.lastName }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">Full Name</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.fullName }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">City</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.city }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">Address</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.address }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">Email</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.email }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-block">
+            <label class="form-label text-muted mb-0">Phone Number</label>
+            <div class="fw-semibold fs-6 text-dark">{{ profileData.phoneNumber }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,183 @@
+<div class="container register-container">
+    <div class="card shadow-lg p-4">
+      <!-- Navigation Tabs -->
+      <div class="d-flex justify-content-center mb-4">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link text-muted" [routerLink]="'/login'">Sign In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active fw-bold" style="color: rgba(38, 56, 94, 1);">Register</a>
+          </li>
+        </ul>
+      </div>
+  
+      <!-- Title -->
+      <h2 class="text-center mb-3">Create an Account</h2>
+  
+      <!-- Registration Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="row">
+          <!-- First Name -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">First Name *</label>
+              <input formControlName="firstName" type="text" class="form-control" placeholder="Enter your first name">
+              <small *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" class="text-danger">
+                First name is required
+              </small>
+            </div>
+          </div>
+          <!-- Last Name -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Last Name *</label>
+              <input formControlName="lastName" type="text" class="form-control" placeholder="Enter your last name">
+              <small *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" class="text-danger">
+                Last name is required
+              </small>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <!-- Email -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Email *</label>
+              <input formControlName="email" type="email" class="form-control" placeholder="Enter your email">
+              <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">
+                Invalid email
+              </small>
+            </div>
+          </div>
+          <!-- Confirm Email -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Confirm Email *</label>
+              <input formControlName="confirmEmail" type="email" class="form-control" placeholder="Confirm your email">
+              <small *ngIf="registerForm.get('confirmEmail')?.errors?.['emailMismatch']" class="text-danger">
+                Emails do not match
+              </small>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <!-- Password with Toggle -->
+          <!-- Password with Toggle -->
+<div class="col-md-6">
+  <div class="mb-3">
+    <label class="form-label">Password *</label>
+    <div class="input-group">
+      <input formControlName="password" [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password">
+      <button type="button" class="btn btn-outline-secondary" style="background-color: white;" (click)="togglePasswordVisibility()">
+        <img [src]="showPassword ? 'assets/eye_hide.jpg' : 'assets/eye_show.jpg'" alt="Toggle Visibility" style="width: 20px; height: 20px;">
+      </button>
+    </div>
+    <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">
+      Password must be at least 6 characters
+    </small>
+  </div>
+</div>
+
+<!-- Confirm Password -->
+<div class="col-md-6">
+  <div class="mb-3">
+    <label class="form-label">Confirm Password *</label>
+    <input formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Confirm your password">
+    <small *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']" class="text-danger">
+      Passwords do not match
+    </small>
+  </div>
+</div>
+
+        </div>
+  
+        <!-- Team Selection -->
+        <div class="mb-3">
+          <label class="form-label">Team *</label>
+          <select formControlName="teamId" class="form-control">
+            <option value="" disabled>Select a Team</option>
+            <option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</option>
+          </select>
+          <small *ngIf="registerForm.get('teamId')?.invalid && registerForm.get('teamId')?.touched" class="text-danger">
+            Please select a team
+          </small>
+        </div>
+  
+        <!-- Address -->
+        <div class="mb-3">
+          <label class="form-label">Address</label>
+          <textarea formControlName="address" class="form-control" rows="2"></textarea>
+        </div>
+  
+        <div class="row">
+          <!-- Organization -->
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Organization</label>
+              <input formControlName="organization" type="text" class="form-control">
+            </div>
+          </div>
+          <!-- Zip Code -->
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">ZipCode</label>
+              <input formControlName="zipCode" type="text" class="form-control">
+            </div>
+          </div>
+          <!-- City -->
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">City</label>
+              <input formControlName="city" type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+  
+        <!-- Captcha -->
+        <div class="mb-3">
+          <label class="form-label">Copy the anti-spam code *</label>
+          <div class="d-flex align-items-center">
+            <div class="captcha-container">
+              <span class="captcha-code">{{ captchaCode }}</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="generateCaptchaCode()" title="Generate new code">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span class="visually-hidden">Refresh Captcha</span>
+              </button>
+            </div>
+            <input formControlName="antiSpamCode" type="text" class="form-control ms-3" style="max-width: 100px;" placeholder="Enter code">
+          </div>
+        
+        </div>
+        
+  
+  
+        <!-- Privacy Policy -->
+        <div class="mb-3 form-check">
+          <input type="checkbox" formControlName="AcceptedPrivacyPolicy" class="form-check-input" id="privacyPolicy">
+          <label class="form-check-label" for="privacyPolicy">
+            I accept the <a href="#">privacy policy</a> of the website *
+          </label>
+          <div *ngIf="registerForm.get('AcceptedPrivacyPolicy')?.invalid && registerForm.get('AcceptedPrivacyPolicy')?.touched" class="text-danger">
+            You must accept the privacy policy
+          </div>
+          
+        </div>
+        <!-- Display registration error -->
+<div *ngIf="registrationError" class="alert alert-danger mb-3">
+  {{ registrationError }}
+</div>
+
+        <!-- Register Button -->
+         <div style="text-align: center;">
+          <button type="submit" class="btn btn-primary w-50" style="background-color: rgba(38, 56, 94, 1);" [disabled]="registerForm.invalid">
+            Register
+          </button>
+          
+         </div>
+      </form>
+    </div>
+  </div>
+  

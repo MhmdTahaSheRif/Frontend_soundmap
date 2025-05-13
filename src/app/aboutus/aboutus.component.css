@@ -1,0 +1,21 @@
+.hero {
+    padding: 50px 0;
+    text-align: center;
+  }
+  
+  .content {
+    padding: 40px 20px;
+  }
+  
+  .illustration {
+    display: flex;
+    flex-direction: column;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  
+  .wave {
+    height: 50px;
+  }

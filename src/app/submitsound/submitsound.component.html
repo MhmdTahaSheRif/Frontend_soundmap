@@ -1,0 +1,236 @@
+<div class="container">
+  
+  <div *ngIf="showLoginMessage" class="alert alert-warning" style="border:2px solid orange">
+    You have an account?
+    <button (click)="goToLogin()" style="background: transparent; border: none;">Sign In</button>
+    to get access to the history of your contributions.<br>
+    You want to create an account?
+    <button (click)="goToRegister()" style="background: transparent; border: none;">Sign Up</button>
+    it's free!
+  </div>
+
+  <form [formGroup]="soundForm" (ngSubmit)="onSubmit()">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 1; min-width: 300px;">
+        <h2 style="font-family: 'Work Sans', sans-serif;">Submit your sounds</h2>
+        <p style="color: #26385E; width: 100%; margin-top: 24px; font-family: 'Work Sans', sans-serif; font-weight: 400; font-size: 16px; line-height: 150%; letter-spacing: 0;">
+          We'd love to have your submissions to soundscape, wherever you are in the world. It's a completely open project that is only possible.
+          If you want to suggest a sound sequence, use the form below.
+        </p>
+      </div>
+      <div style="flex: 1; min-width: 300px; margin-top: 24px;">
+        <img src="assets/maap.png" alt="Download image" style="width: 100%; max-width: 617px; height: auto;">
+      </div>
+    </div>
+
+    <h4 class="section-header" style="color: #26385E;">Describe your sound sequence</h4>
+    <div class="form-group row">
+      <div class="col-md-9">
+        <label for="soundSequenceName">Sound Sequence Name *</label>
+        <input id="soundSequenceName" type="text" formControlName="soundSequenceName" class="form-control" />
+        <div *ngIf="soundForm.get('soundSequenceName')?.invalid && soundForm.get('soundSequenceName')?.touched" class="text-danger">
+          Sound sequence name is required.
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label for="recordingDate">Recording Date *</label>
+        <input id="recordingDate" type="datetime-local" formControlName="recordingDate" class="form-control" />
+        <div *ngIf="soundForm.get('recordingDate')?.invalid && soundForm.get('recordingDate')?.touched" class="text-danger">
+          Recording date is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" class="form-control" rows="3" style="height: 130px;"></textarea>
+      <span style="font-family: 'Helvetica Now Text', sans-serif; font-weight: 400; font-size: 14px;">
+        Describe the spatial configuration in which your sound recording is carried out, the social practices observed, the sound events, and some elements of your perception or feeling.
+      </span>
+    </div>
+    <div class="form-group">
+      <label for="technicalNote">Technical Note</label>
+      <textarea id="technicalNote" formControlName="technicalNote" class="form-control" rows="2" style="height: 130px;"></textarea>
+      <span style="font-family: 'Helvetica Now Text', sans-serif; font-weight: 400; font-size: 14px;">
+        Material used, Nature of the recording, Genre, License...
+      </span>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-md-6">
+        <label for="author">Author / Recorder Name *</label>
+        <input id="author" type="text" formControlName="author" class="form-control" placeholder="Enter author / recorder name" />
+        <div *ngIf="soundForm.get('author')?.invalid && soundForm.get('author')?.touched" class="text-danger">
+          Author name is required.
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <label for="soundEffects" class="form-label fw-semibold ">
+         Sound Effects
+        </label>
+      
+        <ng-select 
+          *ngIf="soundEffectsList"
+          [items]="soundEffectsList"
+          bindLabel="effectName"
+          bindValue="id"
+          [multiple]="true"
+          [searchable]="true"
+          placeholder="Select one or more sound effects"
+          formControlName="soundEffectIds"
+          class="ng-select ng-select-bordered shadow-sm"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-music-note-beamed me-2 text-secondary"></i>
+              <div>
+                <div class="fw-semibold">{{ item.effectName }}</div>
+                <small class="text-muted">{{ item.description || 'No description' }}</small>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template ng-label-tmp let-item="item" let-clear="clear">
+            <span class="badge bg-primary me-1 d-inline-flex align-items-center">
+              {{ item.effectName }}
+              <button 
+                type="button" 
+                (click)="clear(item)" 
+                class="btn-close btn-close-white btn-sm ms-2" 
+                aria-label="Remove">
+              </button>
+            </span>
+          </ng-template>
+          
+          
+        </ng-select>
+      </div>
+      
+      
+    </div>
+
+    <div class="form-group row">
+      <div class="col-md-6">
+        <label for="recordingPlace">Recording Place</label>
+        <input id="recordingPlace" type="text" formControlName="recordingPlace" class="form-control" placeholder="Ex: garden, museum, etc ..." />
+      </div>
+      <div class="col-md-6">
+        <label for="keywords">Keywords</label>
+        <input id="keywords" type="text" formControlName="keywords" class="form-control" placeholder="Ex: bus, road, noise, wind, etc ..." />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="relatedWebPage">Related Web Page</label>
+      <input id="relatedWebPage" type="url" formControlName="relatedWebPage" class="form-control" placeholder="EX: https://www.mydomain.com" />
+      <span style="font-family: 'Helvetica Now Text', sans-serif; font-weight: 400; font-size: 14px;">
+        Specify here the URL address of an external page presenting the sound sequence or your source if it exists.
+      </span>
+    </div>
+    <hr>
+
+    <h4 class="section-header" style="color: #26385E;">Your Sound Recording</h4>
+    <span>Use the form to upload an MP3 file</span>
+    <div class="form-group">
+      <label for="file">Choose an MP3 File *</label>
+      <input id="file" type="file" (change)="onFileChange($event)" class="form-control" accept="audio/*">
+      <div *ngIf="soundForm.get('file')?.invalid && soundForm.get('file')?.touched" class="text-danger">
+        Sound file is required.
+      </div>
+    </div>
+
+    <h4 class="section-header" style="color: #26385E;">Geographic Location</h4>
+    <span>
+      Use the map to locate the archive by clicking on the map or dragging the marker. You can help by searching for an address or by specifying the geographical coordinates directly.
+    </span>
+    <div class="form-group row">
+      <div class="col-md-8">
+        <div id="map" style="height: 400px; margin-top: 20px;" class="mb-3"></div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group row mt-3">
+          <div class="col-md-12">
+            <label>Search for location</label>
+            <input type="text" #searchInput class="form-control" placeholder="Enter a location to search" (keyup.enter)="onSearchLocation(searchInput.value)">
+          </div>
+          <div class="col-md-12 d-flex align-items-end mt-2">
+            <button type="button" class="btn btn-secondary w-100" (click)="onSearchLocation(searchInput.value)">Search</button>
+          </div>
+        </div>
+
+
+        <div class="form-group row mt-3">
+          <div class="col-md-6">
+            <label for="latitude">Latitude *</label>
+            <input id="latitude" type="number" formControlName="latitude" class="form-control" step="any" />
+            <div *ngIf="soundForm.get('latitude')?.invalid && soundForm.get('latitude')?.touched" class="text-danger">
+              Latitude is required.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="longitude">Longitude *</label>
+            <input id="longitude" type="number" formControlName="longitude" class="form-control" step="any" />
+            <div *ngIf="soundForm.get('longitude')?.invalid && soundForm.get('longitude')?.touched" class="text-danger">
+              Longitude is required.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <h4 class="section-header" style="color: #26385E;">Your Information</h4>
+    <span>
+      To propose a sound fragment without a contributor account, you must at least provide an email address. 
+      This information will remain strictly private and will be used to contact you in case of a request for further information about your contribution.
+    </span>
+    <div class="form-group row">
+      <div class="col-md-6">
+        <label for="email">Your E-mail *</label>
+        <input id="email" type="email" formControlName="email" class="form-control" />
+        <div *ngIf="soundForm.get('email')?.invalid && soundForm.get('email')?.touched" class="text-danger">
+          A valid email is required.
+        </div>
+      </div>
+   
+    </div>
+
+    <!-- Captcha
+    <div class="form-group row mt-4">
+      <div class="col-md-6">
+        <label>Captcha Code</label>
+        <div style="font-size: 24px; font-weight: bold; background: #f0f0f0; padding: 10px; letter-spacing: 4px;">
+          {{ captchaCode }}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="captchaInput">Enter Captcha Code</label>
+        <input id="captchaInput" type="text" class="form-control" formControlName="captchaInput" placeholder="Enter the captcha code shown above" />
+        <div *ngIf="soundForm.get('captchaInput')?.invalid && soundForm.get('captchaInput')?.touched" class="text-danger">
+          Captcha input is required.
+        </div>
+        <div *ngIf="soundForm.get('captchaInput')?.value && soundForm.get('captchaInput')?.value !== captchaCode" class="text-danger">
+          Captcha code does not match.
+        </div>
+      </div>
+    </div> -->
+
+
+    <div class="form-group form-check mt-4">
+      <input type="checkbox" formControlName="isConfirm" class="form-check-input" id="isConfirm" />
+      <label class="form-check-label" for="isConfirm">
+        I confirm that the information provided is accurate and I agree to submit this recording.
+      </label>
+      <div *ngIf="soundForm.get('isConfirm')?.invalid && soundForm.get('isConfirm')?.touched" class="text-danger">
+        You must confirm before submission.
+      </div>
+    </div>
+
+
+    <div class="form-group mt-4">
+      <button type="submit" class="btn btn-primary w-100" [disabled]="soundForm.invalid">
+        Submit Sound
+      </button>
+    </div>
+  </form>
+</div>
+

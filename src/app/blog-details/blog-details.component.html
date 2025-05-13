@@ -1,0 +1,32 @@
+<div *ngIf="topicDetails" style=" flex-wrap: wrap; margin: 20px 0;">
+  <!-- Left: Image -->
+  <div style="flex: 1 1 35%; padding-right: 20px;">
+    <img *ngIf="topicDetails.topicImagePath"
+     [src]="'https://localhost:7094/uploads/' + topicDetails.topicImagePath.split('\\').pop()"
+         alt="Topic Image"
+         style="width: 100%; height: 300px; border-radius: 10px;" />
+  </div>
+
+  <!-- Right: Content -->
+  <div class="details-wrapper" style="flex: 1 1 65%; max-width: 65%;">
+    <h2 style="font-weight: bold;">{{ topicDetails.topicTitle }}</h2>
+    <p style="color: gray; font-size: 18px;">{{ topicDetails.topicSubTitle }}</p>
+    <p style="color: gray; font-size: 18px;">{{ topicDetails.topicContent }}</p>
+    
+    <div style="margin: 15px 0; font-size: 16px; line-height: 1.6;">
+      {{ topicDetails.topicDescription }}
+    </div>
+
+    <span style="color: #999;">{{ topicDetails.topicAddedDate | date:'mediumDate' }}</span>
+
+    <div style="margin-top: 15px;">
+      <button style="border-radius: 25px;
+                     background-color: #ff7a7a;
+                     color: white;
+                     padding: 10px 20px;
+                     border: none;"
+              [routerLink]="'/blog'"> {{ categoryNames[topicDetails.categoryId] || 'Loading...' }}
+            </button>
+    </div>
+  </div>
+</div>

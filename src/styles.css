@@ -1,0 +1,14 @@
+body {
+    background-color: #f8f9fa;
+    user-select: none;
+  }
+  
+  .container {
+    max-width: 500px;
+  }
+  
+  .card {
+    border-radius: 10px;
+    background: white;
+  }
+  

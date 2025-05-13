@@ -1,0 +1,146 @@
+<div class="contact-container">
+    <div class="contact-header">
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you. Please fill out the form below.</p>
+    </div>
+  
+    <div class="contact-content">
+      <div class="contact-form-container">
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              class="form-control" 
+              [ngClass]="{'is-invalid': submitted && f['name'].errors}"
+            >
+            <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+              <div *ngIf="f['name'].errors['required']">Name is required</div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && f['email'].errors}"
+            >
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+              <div *ngIf="f['email'].errors['required']">Email is required</div>
+              <div *ngIf="f['email'].errors['email']">Please enter a valid email address</div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input 
+              type="text" 
+              id="subject" 
+              formControlName="subject" 
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && f['subject'].errors}"
+            >
+            <div *ngIf="submitted && f['subject'].errors" class="invalid-feedback">
+              <div *ngIf="f['subject'].errors['required']">Subject is required</div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea 
+              id="message" 
+              style="    height: 364px;
+"
+              formControlName="message" 
+              class="form-control" 
+              rows="5"
+              [ngClass]="{'is-invalid': submitted && f['message'].errors}"
+            ></textarea>
+            <div *ngIf="submitted && f['message'].errors" class="invalid-feedback">
+              <div *ngIf="f['message'].errors['required']">Message is required</div>
+              <div *ngIf="f['message'].errors['minlength']">Message must be at least 20 characters</div>
+            </div>
+          </div>
+  
+          <div class="form-group form-check">
+            <input 
+              type="checkbox" 
+              id="consent" 
+              formControlName="consent" 
+              class="form-check-input"
+              [ngClass]="{'is-invalid': submitted && f['consent'].errors}"
+            >
+            <label class="form-check-label" for="consent">I agree to be contacted regarding my inquiry</label>
+            <div *ngIf="submitted && f['consent'].errors" class="invalid-feedback">
+              <div *ngIf="f['consent'].errors['required']">You must agree before submitting</div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary submit-btn" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+              Send Message
+            </button>
+          </div>
+  
+          <div *ngIf="success" class="alert alert-success mt-3">
+            Your message has been sent successfully! We'll get back to you soon.
+          </div>
+          
+          <div *ngIf="error" class="alert alert-danger mt-3">
+            {{ error }}
+          </div>
+        </form>
+      </div>
+  
+      <div class="contact-info">
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3>Our Location</h3>
+          <p> 1 El Sarayat St.، ABBASSEYA, El Weili, <br>Cairo Governorate 11535</p>
+        </div>
+  
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-phone-alt"></i>
+          </div>
+          <h3>Phone Number</h3>
+          <p>+201271858715</p>
+        </div>
+  
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3>Email Address</h3>
+          <p>edge-pro.com</p>
+        </div>
+  
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3>Business Hours</h3>
+          <p>Monday - Friday: 9am - 5pm<br>Saturday: 10am - 2pm<br>Sunday: Closed</p>
+        </div>
+  
+        <div class="social-media">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

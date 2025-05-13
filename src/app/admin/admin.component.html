@@ -1,0 +1,211 @@
+<div class="container mt-5">
+  <!-- Admin Panel Title -->
+  <h2 class="mb-4 text-primary text-center">Admin Panel</h2>
+
+  <!-- Section Selector -->
+  <div class="mb-4">
+    <label class="form-label fw-bold">Select Section:</label>
+    <select class="form-select w-50 mx-auto" [(ngModel)]="selectedSection">
+      <option value="">-- Select --</option>
+      <option value="users">Unapproved Users</option>
+      <option value="approvedUsers">Role Assignment</option>
+      <option value="categories">Categories</option>
+      <option value="topics">Topics</option>
+      <option value="confirmationsound">Confirm Sound</option>
+    </select>
+  </div>
+
+  <!-- Unapproved Users Section -->
+  <div *ngIf="selectedSection === 'users'" class="card p-4 mb-4 shadow-sm">
+    <h4 class="text-center mb-4">Unapproved Users</h4>
+    <div *ngIf="loading" class="text-center">Loading...</div>
+    <div *ngIf="error" class="text-center text-danger">{{ error }}</div>
+
+    <table *ngIf="unapprovedUsers.length > 0" class="table table-hover mt-3">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of unapprovedUsers">
+          <td>{{ user.email }}</td>
+          <td>
+            <button class="btn btn-success btn-sm me-2" (click)="approveUser()">Approve</button>
+            <button class="btn btn-danger btn-sm" (click)="unapproveUser()">Unapprove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Approved Users Section -->
+  <div *ngIf="selectedSection === 'approvedUsers'" class="card p-4 mb-4 shadow-sm">
+    <h4 class="text-center mb-4">Assign Role to User</h4>
+    <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+      <select class="form-select w-auto" [(ngModel)]="selectedUserId">
+        <option value="" disabled selected>Select User</option>
+        <option *ngFor="let user of approvedUsers" [value]="user.id">
+          {{ user.email }}
+        </option>
+      </select>
+
+      <select class="form-select w-auto" [(ngModel)]="selectedRole">
+        <option value="" disabled selected>Select Role</option>
+        <option value="Admin">Admin</option>
+        <option value="Supervisor">Supervisor</option>
+        <option value="UniversityStudent">University Student</option>
+      </select>
+
+      <button class="btn btn-primary" (click)="assignRoleToSelectedUser()">Assign Role</button>
+    </div>
+  </div>
+
+  <!-- Categories Section -->
+  <div *ngIf="selectedSection === 'categories'" class="card p-4 mb-4 shadow-sm">
+    <h4 class="text-center mb-4">Manage Categories</h4>
+    <div class="mb-3 d-flex gap-3 justify-content-center">
+      <input [(ngModel)]="newCategoryName" placeholder="New Category Name" class="form-control w-50" />
+      <button class="btn btn-success" (click)="addCategory()">Add Category</button>
+    </div>
+
+    <ul class="list-group">
+      <li *ngFor="let cat of categories" class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="w-50">
+          <span *ngIf="editCategory?.id !== cat.id">{{ cat.categoryName }}</span>
+          <input *ngIf="editCategory?.id === cat.id" [(ngModel)]="editCategory.categoryName" class="form-control" />
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-outline-info btn-sm" (click)="editCategory = cat">Edit</button>
+          <button *ngIf="editCategory?.id === cat.id" class="btn btn-outline-success btn-sm" (click)="updateCategory()">Save</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="deleteCategory(cat.id)">Delete</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Topics Section -->
+  <div *ngIf="selectedSection === 'topics'" class="card p-4 mb-4 shadow-sm">
+    <h4 class="text-center mb-4">Add New Topic</h4>
+    <div class="row">
+      <div class="col-md-6">
+        <input [(ngModel)]="newTopic.topicTitle" placeholder="Title" class="form-control mb-3" />
+        <input [(ngModel)]="newTopic.topicSubTitle" placeholder="Subtitle" class="form-control mb-3" />
+        <textarea [(ngModel)]="newTopic.topicContent" placeholder="Content" rows="4" class="form-control mb-3"></textarea>
+        <input [(ngModel)]="newTopic.topicImagePath" placeholder="Image Path" class="form-control mb-3" />
+        <input type="file" (change)="onFileSelected($event)" class="form-control mb-3" />
+      </div>
+      <div class="col-md-6">
+        <input [(ngModel)]="newTopic.topicAddedDate" type="datetime-local" class="form-control mb-3" />
+        <div class="mb-3">
+          <label>Category:</label>
+          <select class="form-select" [(ngModel)]="newTopic.categoryId">
+            <option value="" disabled selected hidden>Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.categoryName }}</option>
+          </select>
+        </div>
+        <button class="btn btn-primary mt-3" (click)="addTopic()">Add Topic</button>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h5 class="text-center mb-4">Topics List</h5>
+    <ul class="list-group">
+      <li *ngFor="let t of topics" class="list-group-item d-flex justify-content-between align-items-center">
+        <div><strong>{{ t.topicTitle }}</strong></div>
+        <div class="btn-group">
+          <button class="btn btn-outline-info btn-sm" (click)="editTopicData(t)">Edit</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="deleteTopic(t.id)">Delete</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Edit Topic Section -->
+    <div *ngIf="editTopic" class="card p-4 mt-4 shadow-sm border">
+      <h4>Edit Topic</h4>
+      <div class="mb-3">
+        <label>Title:</label>
+        <input [(ngModel)]="editTopic.topicTitle" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label>Subtitle:</label>
+        <input [(ngModel)]="editTopic.topicSubTitle" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label>Content:</label>
+        <textarea [(ngModel)]="editTopic.topicContent" class="form-control" rows="4"></textarea>
+      </div>
+      <div class="mb-3">
+        <label>Image Path:</label>
+        <input [(ngModel)]="editTopic.topicImagePath" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label>Added Date:</label>
+        <input [(ngModel)]="editTopic.topicAddedDate" type="datetime-local" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label>Category:</label>
+        <select class="form-select" [(ngModel)]="editTopic.categoryId">
+          <option value="" disabled selected hidden>Select a category</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.categoryName }}</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-success" (click)="updateTopic()">Save Changes</button>
+        <button class="btn btn-secondary" (click)="editTopic = null">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Sound Section -->
+  <div *ngIf="selectedSection === 'confirmationsound'" class="card p-4 shadow-sm">
+    <h2 class="text-center mb-4">Manage Sounds</h2>
+
+    <h4>Unconfirmed Sounds</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Sound Name</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sound of unconfirmedSounds; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ sound.soundSequenceName }}</td>
+          <td>{{ sound.status }}</td>
+          <td>
+            <button class="btn btn-success btn-sm" (click)="confirmSound(sound.id)">Confirm</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Confirmed Sounds</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Sound Name</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sound of confirmedSounds; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ sound.soundSequenceName }}</td>
+          <td>{{ sound.status }}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" (click)="unconfirmSound(sound.id)">Unconfirm</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

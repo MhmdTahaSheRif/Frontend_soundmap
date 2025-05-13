@@ -1,0 +1,129 @@
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">My Sounds</h2>
+
+  <div *ngIf="sounds.length === 0" class="alert alert-info text-center">
+    No sounds available.
+  </div>
+
+  <table *ngIf="sounds.length > 0" class="table table-bordered table-hover text-center align-middle shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Sound Name</th>
+        <th>Description</th>
+        <th>Recording Place</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sound of sounds">
+        <td>{{ sound.soundSequenceName }}</td>
+        <td>{{ sound.description }}</td>
+        <td>{{ sound.recordingPlace }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditModal(sound)">
+            <i class="bi bi-pencil-square"></i> Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteSound(sound.id)">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit Sound Modal -->
+<div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="isModalOpen">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content p-4 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Sound</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <form (ngSubmit)="saveEdit()" enctype="multipart/form-data">
+        <div class="modal-body row g-3">
+
+          <div class="col-md-6">
+            <label>Sound Name</label>
+            <input class="form-control" [(ngModel)]="selectedSound.soundSequenceName" name="soundSequenceName">
+          </div>
+
+          <div class="col-md-6">
+            <label>Recording Place</label>
+            <input class="form-control" [(ngModel)]="selectedSound.recordingPlace" name="recordingPlace">
+          </div>
+
+          <div class="col-md-6">
+            <label>Recording Date</label>
+            <input type="datetime-local" class="form-control" [(ngModel)]="selectedSound.recordingDate" name="recordingDate">
+          </div>
+
+          <div class="col-md-6">
+            <label>Description</label>
+            <textarea class="form-control" [(ngModel)]="selectedSound.description" name="description" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label>Related Web Page</label>
+            <input class="form-control" [(ngModel)]="selectedSound.relatedWebPage" name="relatedWebPage">
+          </div>
+
+          <div class="col-md-6">
+            <label>Technical Note</label>
+            <input class="form-control" [(ngModel)]="selectedSound.technicalNote" name="technicalNote">
+          </div>
+
+          <div class="col-md-6">
+            <label>Author</label>
+            <input class="form-control" [(ngModel)]="selectedSound.author" name="author">
+          </div>
+
+          <div class="col-md-6">
+            <label>Sound File</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)">
+          </div>
+
+          <div class="col-md-6">
+            <label>Latitude</label>
+            <input class="form-control" [(ngModel)]="selectedSound.latitude" name="latitude">
+          </div>
+
+          <div class="col-md-6">
+            <label>Longitude</label>
+            <input class="form-control" [(ngModel)]="selectedSound.longitude" name="longitude">
+          </div>
+
+          <div class="col-md-6">
+            <label>Email</label>
+            <input type="email" class="form-control" [(ngModel)]="selectedSound.email" name="email">
+          </div>
+
+          <div class="col-md-12">
+            <label>Sound Effects</label>
+            <ng-select
+              [items]="soundEffectsList"
+              bindLabel="effectName"
+              bindValue="id"
+              [(ngModel)]="selectedSound.soundEffects"
+              [multiple]="true"
+              [closeOnSelect]="false"
+              placeholder="Select sound effects"
+              name="soundEffects">
+              <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                <span class="badge bg-primary me-1 d-inline-flex align-items-center">
+                  {{ item.effectName }}
+                  <button type="button" (click)="clear(item)" class="btn-close btn-close-white btn-sm ms-2" aria-label="Remove"></button>
+                </span>
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="modal-footer mt-4">
+          <button type="submit" class="btn btn-success px-4">Save</button>
+          <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
