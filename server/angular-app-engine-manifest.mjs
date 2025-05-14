@@ -1,6 +1,6 @@
 
 export default {
-  basePath: 'https://github.com/MhmdTahaSheRif/Frontend_soundmap',
+  basePath: 'https://MhmdTahaSheRif.github.io/Frontend_soundmap',
   supportedLocales: {
   "en-US": ""
 },
