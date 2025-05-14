@@ -1,0 +1,16 @@
+{
+  "routes": {
+    "/MhmdTahaSheRif/Frontend_soundmap": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/aboutus": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/addsound": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/admin": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/blog": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/content": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/home": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/login": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/myprofile": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/mysounds": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/navbar": {},
+    "/MhmdTahaSheRif/Frontend_soundmap/register": {}
+  }
+}
