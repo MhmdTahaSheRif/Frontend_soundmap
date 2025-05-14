@@ -16,9 +16,9 @@ export class MysoundsComponent implements OnInit {
   sounds: any[] = [];
   userId: string | null = null;
   selectedFile: File | null = null;
-
+ map!: L.Map;
+  marker!: L.Marker;
   isModalOpen = false;
-  selectedSound: any = null;
 
   constructor(private soundService: SoundService,private http:HttpClient) {}
 
@@ -51,8 +51,48 @@ export class MysoundsComponent implements OnInit {
       this.selectedFile = file;
     }
   }
+  selectedSound: any = {
+    latitude: null,
+    longitude: null,
+    // other fields
+  };
 
 
+
+ 
+  ngAfterViewInit(): void {
+      import('leaflet').then(L => this.initMap(L));
+     }
+
+  initMap(L: any) {
+    // Default to some lat and lng, or use existing sound data
+    const defaultLat = this.selectedSound.latitude || 51.505;
+    const defaultLng = this.selectedSound.longitude || -0.09;
+
+    // Initialize Leaflet map
+    this.map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    // Add marker at the current location
+    this.marker = L.marker([defaultLat, defaultLng]).addTo(this.map);
+
+    // Add event listener for click to set latitude and longitude
+    this.map.on('click', (event: any) => {
+      const lat = event.latlng.lat;
+      const lng = event.latlng.lng;
+      
+      // Update the latitude and longitude in the form
+      this.selectedSound.latitude = lat;
+      this.selectedSound.longitude = lng;
+
+      // Move marker to clicked location
+      this.marker.setLatLng([lat, lng]);
+    });
+  }
 
 loadSoundEffects() {
   this.http.get<any[]>('https://localhost:7094/api/SoundEffects').subscribe(

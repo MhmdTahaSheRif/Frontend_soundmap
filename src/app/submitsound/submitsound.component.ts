@@ -36,7 +36,7 @@ export class SoundFormComponent implements OnInit ,AfterViewInit {
       latitude: [0, Validators.required],
       longitude: [0, Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      isConfirm: [false],
+  isConfirm: [false, Validators.requiredTrue] ,
       soundEffectIds: [[], Validators.required] 
     });
   }

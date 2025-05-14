@@ -17,6 +17,16 @@ export class SoundService {
     });
   }
 
+ getAllSounds1(): Observable<any[]> {
+  const token = localStorage.getItem('authToken');
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.get<any[]>(`https://localhost:7094/api/Sound/confirmed`, { headers });
+}
+ 
+  
   getAllSounds(): Observable<any[]> {
     const userId = localStorage.getItem('userId');
     return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`, {

@@ -14,7 +14,6 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-      <!-- Centered Navigation Items -->
       <ul class="navbar-nav mx-auto main-nav">
         <li class="nav-item"><a class="nav-link" routerLink="/aboutus">ABOUT</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/blog">BLOG</a></li>
@@ -24,7 +23,6 @@
         <li class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/admin">ADMIN</a></li>
       </ul>
 
-      <!-- Right-side Utility Section -->
       <div class="utility-nav d-flex align-items-center">
         <ng-container *ngIf="isLoggedIn; else guestLinks">
           <div class="utility-item" routerLink="/myprofile">
@@ -32,7 +30,7 @@
             <span class="utility-label">Profile</span>
           </div>
           <div class="utility-item" (click)="logout()">
-            <img src="assets/logout.png" alt="Logout">
+            <img src="assets/images-removebg-preview.png" alt="Logout">
             <span class="utility-label">Logout</span>
           </div>
         </ng-container>
@@ -44,7 +42,6 @@
           </div>
         </ng-template>
 
-        <!-- Language Selector -->
         <div class="utility-item" (click)="toggleLanguageDropdown()">
           <img src="assets/world.png" alt="Language">
           <span class="utility-label">{{ selectedLanguage || 'Language' }}</span>
@@ -57,7 +54,6 @@
           </div>
         </div>
 
-        <!-- App Logo -->
         <div class="utility-item d-none d-lg-flex">
           <img src="assets/logo.jpg" alt="App" style="width: 45px; height: 45px;">
         </div>

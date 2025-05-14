@@ -21,7 +21,7 @@
     padding: 20px;
   }
   .container{
-    max-width: 950px;
+    max-width: 1250px;
   }
   ::ng-deep .ng-select {
   border-radius: 0.375rem;

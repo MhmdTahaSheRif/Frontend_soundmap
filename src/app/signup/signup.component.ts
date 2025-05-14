@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,15 +16,8 @@ export class SignupComponent implements OnInit {
   showPassword: boolean = false;
   captchaCode: string = '';
   
-  teams: { id: number; name: string }[] = [
-    { id: 1, name: 'Team1' },
-    { id: 2, name: 'Team2' },
-    { id: 3, name: 'Team3' },
-    { id: 4, name: 'Team4' },
-    { id: 5, name: 'Team5' },
-    { id: 6, name: 'Team6' },
-    { id: 7, name: 'Admin' }
-  ];
+  teams: any[] = [];
+
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +27,7 @@ export class SignupComponent implements OnInit {
   ) {}
   
   ngOnInit() {
+    this.loadTeams();
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       confirmEmail: ['', [Validators.required]],
@@ -104,7 +98,28 @@ export class SignupComponent implements OnInit {
     }
   }
   
-  
+
+
+  loadTeams(): void {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    this.http.get<any[]>('https://localhost:7094/api/Team', { headers })
+      .subscribe({
+        next: (res) => {
+          this.teams = res.map(team => ({
+            id: team.teamId,
+            name: team.teamName
+          }));
+        },
+        error: (err) => {
+          console.error('Failed to load teams:', err);
+        }
+      });
+  }
+
   register() {
     console.log('Registering...');
     

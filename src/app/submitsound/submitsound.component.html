@@ -64,11 +64,11 @@
           Author name is required.
         </div>
       </div>
-      <div class="col-md-6 mb-4">
+      <div class="col-md-6 mb-4" >
         <label for="soundEffects" class="form-label fw-semibold ">
          Sound Effects
         </label>
-      
+
         <ng-select 
           *ngIf="soundEffectsList"
           [items]="soundEffectsList"
@@ -80,8 +80,8 @@
           formControlName="soundEffectIds"
           class="ng-select ng-select-bordered shadow-sm"
         >
-          <ng-template ng-option-tmp let-item="item">
-            <div class="d-flex align-items-center">
+          <ng-template ng-option-tmp let-item="item" >
+            <div class="d-flex align-items-center" >
               <i class="bi bi-music-note-beamed me-2 text-secondary"></i>
               <div>
                 <div class="fw-semibold">{{ item.effectName }}</div>

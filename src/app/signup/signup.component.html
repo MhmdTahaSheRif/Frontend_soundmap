@@ -95,16 +95,19 @@
         </div>
   
         <!-- Team Selection -->
-        <div class="mb-3">
-          <label class="form-label">Team *</label>
-          <select formControlName="teamId" class="form-control">
-            <option value="" disabled>Select a Team</option>
-            <option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</option>
-          </select>
-          <small *ngIf="registerForm.get('teamId')?.invalid && registerForm.get('teamId')?.touched" class="text-danger">
-            Please select a team
-          </small>
-        </div>
+      <div class="mb-3">
+  <label class="form-label">Team *</label>
+  <select formControlName="teamId" class="form-control">
+    <option value="" disabled>Select a Team</option>
+    <option *ngFor="let team of teams" [value]="team.id">
+      {{ team.name }}
+    </option>
+  </select>
+  <small *ngIf="registerForm.get('teamId')?.invalid && registerForm.get('teamId')?.touched" class="text-danger">
+    Please select a team
+  </small>
+</div>
+
   
         <!-- Address -->
         <div class="mb-3">

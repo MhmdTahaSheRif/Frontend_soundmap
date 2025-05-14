@@ -1,16 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TeamService, User } from '../team.service';
+import { SoundService } from '../sound.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+
+interface Team {
+  teamId: number;
+  teamName: string;
+  users: any[];
+}
+
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule,ReactiveFormsModule,NgSelectModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+alert(arg0: string) {
+throw new Error('Method not implemented.');
+}
   // Users
   unapprovedUsers: any[] = [];
   loading = false;
@@ -39,9 +52,19 @@ approvedUsers: any;
   unconfirmedSounds: any[] | undefined;
   playingAudio: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private teamService:TeamService,private fb: FormBuilder,private soundService: SoundService) {  this.teamForm = this.fb.group({
+      teamName: ['']
+    });}
+ teams: Team[] = [];
 
-  ngOnInit(): void {
+
+    ngOnInit(): void {
+      this.loadSoundEffects();
+
+      this.loadSounds1();
+    
+    this.getTeams();
+    this.getAllUsers();
         this.getUnconfirmedSounds();
     this.getConfirmedSounds();
     this.getUnapprovedUsers();
@@ -318,6 +341,7 @@ getUnconfirmedSounds(): void {
       );
   }
 
+ 
   // Get confirmed sounds, excluding deleted ones
   getConfirmedSounds(): void {
     const headers = new HttpHeaders().set('Authorization', 'Bearer ' + localStorage.getItem('authToken'));
@@ -355,12 +379,227 @@ getUnconfirmedSounds(): void {
       .subscribe(
         (response) => {
           console.log('Sound unconfirmed:', response);
-          this.getUnconfirmedSounds(); // Refresh the list
-          this.getConfirmedSounds();   // Refresh the list
+          this.getUnconfirmedSounds(); 
+          this.getConfirmedSounds();  
         },
         (error) => {
           console.error('Error unconfirming sound:', error);
         }
       );
   }
+
+
+
+  teamForm!: FormGroup;
+  isEdit = false;
+  selectedTeamId: number | null = null;
+  availableUsers: User[] = [];
+
+  allUsers: any[] = [];
+
+  
+
+getTeams() {
+  this.http.get<any[]>('https://localhost:7094/api/Team', this.getAuthHeaders())
+    .subscribe(res => this.teams = res);
+}
+
+getAllUsers() {
+  this.http.get<any[]>('https://localhost:7094/api/admin/GetAllActiveUsers', this.getAuthHeaders())
+    .subscribe(res => this.allUsers = res);
+}
+
+addTeam() {
+  const body = {
+    teamId: 0,
+    teamName: this.teamForm.value.teamName,
+    users: []
+  };
+  this.http.post('https://localhost:7094/api/Team', body, this.getAuthHeaders())
+    .subscribe(() => {
+      this.getTeams();
+      this.teamForm.reset();
+    }); window.location.reload(); 
+}
+
+deleteTeam(teamID: number) {
+  if (!teamID) {
+    console.error('teamID is undefined');
+    return;
+  }
+
+  this.http.delete(`https://localhost:7094/api/Team/${teamID}`, this.getAuthHeaders())
+    .subscribe({
+      next: () => {
+        console.log('Team deleted successfully');
+        this.getTeams(); 
+      },
+      error: err => {
+        console.error('Error deleting team:', err);
+      }
+    });  window.location.reload(); 
+}
+
+addUserToTeam(teamId: number, userId: string) {
+  this.http.post(`https://localhost:7094/api/Team/${teamId}/AddUserToTeam/${userId}`, {}, this.getAuthHeaders())
+    .subscribe(() => this.getTeams());
+      window.location.reload(); 
+}
+
+  sounds: any[] = [];
+  userId: string | null = null;
+  selectedFile: File | null = null;
+ map!: L.Map;
+  marker!: L.Marker;
+  isModalOpen = false;
+
+
+loadSounds1(): void {
+  this.soundService.getAllSounds1().subscribe({
+    next: data => {
+      console.log('API Data:', data);
+      this.sounds = data.filter(s => !s.isDelete);  // Only filter deleted items
+      console.log('Filtered Sounds:', this.sounds);
+    },
+    error: err => console.error('Error loading sounds:', err)
+  });
+}
+
+
+
+
+  soundEffectsList: readonly any[] | null | undefined;
+
+
+  onFileSelected1(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+  selectedSound: any = {
+    latitude: null,
+    longitude: null,
+    // other fields
+  };
+
+
+
+ 
+  ngAfterViewInit(): void {
+      import('leaflet').then(L => this.initMap(L));
+     }
+
+  initMap(L: any) {
+    // Default to some lat and lng, or use existing sound data
+    const defaultLat = this.selectedSound.latitude || 51.505;
+    const defaultLng = this.selectedSound.longitude || -0.09;
+
+    // Initialize Leaflet map
+    this.map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    // Add marker at the current location
+    this.marker = L.marker([defaultLat, defaultLng]).addTo(this.map);
+
+    // Add event listener for click to set latitude and longitude
+    this.map.on('click', (event: any) => {
+      const lat = event.latlng.lat;
+      const lng = event.latlng.lng;
+      
+      // Update the latitude and longitude in the form
+      this.selectedSound.latitude = lat;
+      this.selectedSound.longitude = lng;
+
+      // Move marker to clicked location
+      this.marker.setLatLng([lat, lng]);
+    });
+  }
+
+loadSoundEffects() {
+  this.http.get<any[]>('https://localhost:7094/api/SoundEffects').subscribe(
+    data => this.soundEffectsList = data,
+    error => console.error('Error fetching sound effects:', error)
+  );
+}
+
+  openEditModal(sound: any): void {
+    this.selectedSound = { ...sound };
+    this.isModalOpen = true;
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedSound = null;
+    this.selectedFile = null;
+  }
+ latitude = 30.033333;
+  longitude = 31.233334;
+
+  
+
+ deleteSound1(id: string): void {
+  const confirmDelete = confirm('Are you sure you want to delete this sound?');
+  if (!confirmDelete) return;
+
+  this.soundService.deleteSound(id).subscribe({
+    next: () => {
+      this.sounds = this.sounds.filter(s => s.id !== id);
+    },
+    error: err => console.error('Error deleting sound:', err)
+  });
+}
+saveEdit(): void {
+  if (!this.selectedSound) return;
+
+  const confirmSave = confirm('Are you sure you want to save changes to this sound?');
+  if (!confirmSave) return;
+  
+  // Continue saving...
+  const currentUserId = localStorage.getItem('userId'); 
+
+  this.selectedSound.isDelete = false;
+  this.selectedSound.isConfirm = true;
+  this.selectedSound.deletedUser = null;
+  this.selectedSound.userId = currentUserId;
+  this.selectedSound.modifiedUser = currentUserId;
+
+  const formData = new FormData();
+
+  const editableKeys = [
+    "soundSequenceName","id", "description", "recordingPlace", "recordingDate",
+    "relatedWebPage", "technicalNote", "author", "latitude", "longitude",
+    "email", "isConfirm", "modifiedDate", "modifiedUser", "deleteDate", 
+    "isDelete", "deletedUser", "userId"
+  ];
+
+  editableKeys.forEach(key => {
+    if (this.selectedSound[key] !== undefined && this.selectedSound[key] !== null) {
+      formData.append(key, this.selectedSound[key]);
+    }
+  });
+
+  if (this.selectedFile) {
+    formData.append('file', this.selectedFile);
+  }
+
+  if (this.selectedSound.soundEffects && this.selectedSound.soundEffects.length > 0) {
+    this.selectedSound.soundEffects.forEach((effectId: string) => {
+      formData.append('soundEffects', effectId);
+    });
+  }
+
+  this.soundService.updateSound(formData, this.selectedSound.id).subscribe({
+    next: () => {
+      this.closeModal();
+      this.loadSounds1();
+    },
+    error: err => console.error('Error updating sound:', err)
+  });
+}
+
 }

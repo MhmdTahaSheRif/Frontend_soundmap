@@ -73,8 +73,10 @@ export class NavbarComponent {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userId');
       this.isLoggedIn = false;
-      this.router.navigate(['/register']); 
-      window.location.reload();
+ this.router.navigate(['/register']).then(() => {
+        }).catch((err) => {
+          console.error('Navigation error:', err);
+        });      window.location.reload();
     }
   }
 

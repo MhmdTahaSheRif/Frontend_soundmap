@@ -1,6 +1,11 @@
 <div class="container mt-5">
   <!-- Admin Panel Title -->
-  <h2 class="mb-4 text-primary text-center">Admin Panel</h2>
+  <h2 class="mb-4 text-center" style="    background-color: #0F183E;
+    color: white;
+    width: 320px;
+    margin: auto;
+    padding: 10px;
+    border-radius: 12px;">Admin Panel</h2>
 
   <!-- Section Selector -->
   <div class="mb-4">
@@ -8,9 +13,11 @@
     <select class="form-select w-50 mx-auto" [(ngModel)]="selectedSection">
       <option value="">-- Select --</option>
       <option value="users">Unapproved Users</option>
+      <option value="SoundsAction">Sounds Action </option>
       <option value="approvedUsers">Role Assignment</option>
       <option value="categories">Categories</option>
       <option value="topics">Topics</option>
+      <option value="TeasmActions">Teams</option>
       <option value="confirmationsound">Confirm Sound</option>
     </select>
   </div>
@@ -207,5 +214,200 @@
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+
+
+  <div *ngIf="selectedSection === 'TeasmActions'" class="card p-4 mb-4 shadow-sm">
+<div class="p-4">
+  <h2> Teams Actions</h2>
+
+  <form [formGroup]="teamForm" (ngSubmit)="addTeam()" class="my-3">
+    <input formControlName="teamName" placeholder="اسم الفريق" class="form-control w-50 d-inline-block me-2" />
+    <button type="submit" class="btn btn-primary"> Add Team</button>
+  </form>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th> Team Name</th>
+        <th>Users</th>
+        <th> Add User</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let team of teams">
+        <td>{{ team.teamName }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let user of team.users">
+              {{ user.fullName }} ({{ user.email }})
+            </li>
+          </ul>
+        </td>
+        <td>
+          <select class="form-select w-75 d-inline-block" #userSelector>
+            <option *ngFor="let user of allUsers" [value]="user.id">{{ user.fullName }}</option>
+          </select>
+          <button class="btn btn-success btn-sm ms-2" (click)="addUserToTeam(team.teamId, userSelector.value)">Add</button>
+        </td>
+        <td>
+<td>
+  <button class="btn btn-danger btn-sm" (click)="deleteTeam(team.teamId)">Delete</button>
+</td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+
+
+
+
+
+
+  <div *ngIf="selectedSection === 'SoundsAction'" class="card p-4 mb-4 shadow-sm">
+
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">My Sounds</h2>
+
+  <div *ngIf="sounds.length === 0" class="alert alert-info text-center">
+    No sounds available.
+  </div>
+
+  <table *ngIf="sounds.length > 0" class="table table-bordered table-hover text-center align-middle shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Sound Name</th>
+        <th>Description</th>
+        <th>Recording Place</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sound of sounds">
+        <td>{{ sound.soundSequenceName }}</td>
+        <td>{{ sound.description }}</td>
+        <td>{{ sound.recordingPlace }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditModal(sound)">
+            <i class="bi bi-pencil-square"></i> Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteSound1(sound.id)">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit Sound Modal -->
+<div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="isModalOpen">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content p-4 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Sound</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <form (ngSubmit)="saveEdit()" enctype="multipart/form-data">
+        <div class="modal-body row g-3">
+
+          <div class="col-md-6">
+            <label>Sound Name</label>
+            <input class="form-control" [(ngModel)]="selectedSound.soundSequenceName" name="soundSequenceName">
+          </div>
+
+          <div class="col-md-6">
+            <label>Recording Place</label>
+            <input class="form-control" [(ngModel)]="selectedSound.recordingPlace" name="recordingPlace">
+          </div>
+
+          <div class="col-md-6">
+            <label>Recording Date</label>
+            <input type="datetime-local" class="form-control" [(ngModel)]="selectedSound.recordingDate" name="recordingDate">
+          </div>
+
+          <div class="col-md-6">
+            <label>Description</label>
+            <textarea class="form-control" [(ngModel)]="selectedSound.description" name="description" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label>Related Web Page</label>
+            <input class="form-control" [(ngModel)]="selectedSound.relatedWebPage" name="relatedWebPage">
+          </div>
+
+          <div class="col-md-6">
+            <label>Technical Note</label>
+            <input class="form-control" [(ngModel)]="selectedSound.technicalNote" name="technicalNote">
+          </div>
+
+          <div class="col-md-6">
+            <label>Author</label>
+            <input class="form-control" [(ngModel)]="selectedSound.author" name="author">
+          </div>
+
+          <div class="col-md-6">
+            <label>Sound File</label>
+            <input type="file" class="form-control" (change)="onFileSelected1($event)">
+          </div>
+
+
+          
+
+
+          <div class="col-md-6">
+            <label>Latitude</label>
+            <input class="form-control" [(ngModel)]="selectedSound.latitude" name="latitude">
+          </div>
+
+
+          <div class="col-md-6">
+            <label>Longitude</label>
+            <input class="form-control" [(ngModel)]="selectedSound.longitude" name="longitude">
+          </div>
+<!-- Add a container div for the map -->
+
+          <div class="col-md-6">
+            <label>Email</label>
+            <input type="email" class="form-control" [(ngModel)]="selectedSound.email" name="email">
+          </div>
+
+          <div class="col-md-12">
+            <label>Sound Effects</label>
+            <ng-select
+              [items]="soundEffectsList"
+              bindLabel="effectName"
+              bindValue="id"
+              [(ngModel)]="selectedSound.soundEffects"
+              [multiple]="true"
+              [closeOnSelect]="false"
+              placeholder="Select sound effects"
+                        class="ng-select ng-select-bordered shadow-sm"
+
+              name="soundEffects">
+              <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                <span class="badge bg-primary me-1 d-inline-flex align-items-center">
+                  {{ item.effectName }}
+                  <button type="button" (click)="clear(item)" class="btn-close btn-close-white btn-sm ms-2" aria-label="Remove"></button>
+                </span>
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+<div id="map" style="height: 400px;"></div>
+
+        <div class="modal-footer mt-4">
+          <button type="submit" class="btn btn-success px-4">Save</button>
+          <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
